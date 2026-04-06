@@ -19,6 +19,7 @@ const zhThemeConfig: DefaultTheme.Config = {
     { text: '指南', link: '/guide/introduction' },
     { text: '架构', link: '/architecture/overview' },
     { text: 'API', link: '/api/' },
+    { text: '下载', link: '/downloads/' },
   ],
   sidebar: {
     '/guide/': [
@@ -50,6 +51,12 @@ const zhThemeConfig: DefaultTheme.Config = {
           { text: 'Layout API', link: '/api/layout' },
           { text: 'Extension API', link: '/api/extensions' },
         ],
+      },
+    ],
+    '/downloads/': [
+      {
+        text: '下载',
+        items: [{ text: '下载指南', link: '/downloads/' }],
       },
     ],
   },
@@ -112,6 +119,7 @@ const enThemeConfig: DefaultTheme.Config = {
     { text: 'Guide', link: '/en/guide/introduction' },
     { text: 'Architecture', link: '/en/architecture/overview' },
     { text: 'API', link: '/en/api/' },
+    { text: 'Downloads', link: '/en/downloads/' },
   ],
   sidebar: {
     '/en/guide/': [
@@ -143,6 +151,12 @@ const enThemeConfig: DefaultTheme.Config = {
           { text: 'Layout API', link: '/en/api/layout' },
           { text: 'Extension API', link: '/en/api/extensions' },
         ],
+      },
+    ],
+    '/en/downloads/': [
+      {
+        text: 'Downloads',
+        items: [{ text: 'Download Guide', link: '/en/downloads/' }],
       },
     ],
   },
