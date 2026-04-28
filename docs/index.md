@@ -17,7 +17,7 @@ hero:
       link: /api/
     - theme: alt
       text: GitHub
-      link: https://github.com/TauriTavern/TauriTavern
+      link: https://github.com/Darkatse/TauriTavern
 
 features:
   - title: 原生运行时
