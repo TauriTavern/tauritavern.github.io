@@ -17,6 +17,7 @@ This site is meant to be more than an expanded README:
 ## Suggested reading order
 
 1. Start with [Getting Started](/en/guide/getting-started) to understand the repo layout and local workflow.
-2. Read [Architecture Overview](/en/architecture/overview) to build the mental model.
-3. Move into [Frontend Integration](/en/architecture/frontend) or [Backend Layers](/en/architecture/backend) as needed.
-4. Use the [API section](/en/api/) once host-facing contracts are ready to be documented formally.
+2. If you want to use or adapt the new generation workflow, read [Agent Overview](/en/agent/).
+3. Read [Architecture Overview](/en/architecture/overview) to build the mental model.
+4. Move into [Frontend Integration](/en/architecture/frontend) or [Backend Layers](/en/architecture/backend) as needed.
+5. Use the [API section](/en/api/) once host-facing contracts are ready to be documented formally.

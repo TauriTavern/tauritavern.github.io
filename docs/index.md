@@ -16,6 +16,9 @@ hero:
       text: API 接入
       link: /api/
     - theme: alt
+      text: Agent
+      link: /agent/
+    - theme: alt
       text: GitHub
       link: https://github.com/TauriTavern/TauriTavern
 
@@ -26,8 +29,10 @@ features:
     details: 后端按 Clean Architecture 分层重构，将命令边界、应用服务、领域模型与基础设施实现明确拆开。
   - title: 上游兼容
     details: 前端保留 SillyTavern 1.16.0，并通过模块化注入、请求拦截与宿主 ABI 维持兼容与可维护性。
+  - title: Agent 工作流
+    details: 在普通生成之外提供受约束的工作区运行方式，让模型可以查阅、修改、提交，并把过程留在时间线中。
   - title: 文档先行
     details: 站点按“先稳信息架构，再逐步补内容”搭建，方便后续持续迁移与沉淀项目知识。
 ---
 
-> 这是一套为持续写作准备的基础骨架。后续可按专题逐步把主仓库中的设计说明、API 契约与现状文档迁移进来。
+> 这是一套为持续写作准备的基础骨架。Agent 栏目会优先面向用户与创作者说明使用方式、适配方式和当前边界。

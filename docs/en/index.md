@@ -16,6 +16,9 @@ hero:
       text: API Integration
       link: /en/api/
     - theme: alt
+      text: Agent
+      link: /en/agent/
+    - theme: alt
       text: GitHub
       link: https://github.com/TauriTavern/TauriTavern
 
@@ -26,8 +29,10 @@ features:
     details: The backend is rebuilt with Clean Architecture layers, separating command boundaries, services, domain models, and infrastructure.
   - title: Upstream Compatibility
     details: The frontend stays aligned with SillyTavern 1.16.0 and remains maintainable through modular injection, request interception, and a stable host ABI.
+  - title: Agent Workflow
+    details: Alongside ordinary generation, Agent provides a constrained workspace flow where the model can consult, edit, commit, and leave its process visible in the timeline.
   - title: Docs First
     details: The site is structured around stable information architecture first, so content can be migrated in gradually without locking future writing into the scaffold.
 ---
 
-> This is a foundation prepared for long-term documentation work. Stable design notes, API contracts, and implementation snapshots can be migrated here over time.
+> This is a foundation prepared for long-term documentation work. The Agent section focuses first on usage, creator adaptation, and current boundaries.

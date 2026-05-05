@@ -17,6 +17,7 @@ const zhThemeConfig: DefaultTheme.Config = {
   siteTitle: 'TauriTavern Docs',
   nav: [
     { text: '指南', link: '/guide/introduction' },
+    { text: 'Agent', link: '/agent/' },
     { text: '架构', link: '/architecture/overview' },
     { text: 'API', link: '/api/' },
     { text: '下载', link: '/downloads/' },
@@ -30,6 +31,28 @@ const zhThemeConfig: DefaultTheme.Config = {
           { text: '快速开始', link: '/guide/getting-started' },
           { text: '文档写作工作流', link: '/guide/docs-workflow' },
         ],
+      },
+    ],
+    '/agent/': [
+      {
+        text: 'Agent',
+        items: [
+          { text: '总览', link: '/agent/' },
+          { text: '快速开始', link: '/agent/quick-start' },
+          { text: '工作区与时间线', link: '/agent/workspace-timeline' },
+        ],
+      },
+      {
+        text: '创作者',
+        items: [
+          { text: 'Agent 配置档案', link: '/agent/profiles' },
+          { text: 'SKILLS', link: '/agent/skills' },
+          { text: '创作者适配指南', link: '/agent/creator-guide' },
+        ],
+      },
+      {
+        text: '参考',
+        items: [{ text: '当前能力与边界', link: '/agent/current-limits' }],
       },
     ],
     '/architecture/': [
@@ -117,6 +140,7 @@ const enThemeConfig: DefaultTheme.Config = {
   siteTitle: 'TauriTavern Docs',
   nav: [
     { text: 'Guide', link: '/en/guide/introduction' },
+    { text: 'Agent', link: '/en/agent/' },
     { text: 'Architecture', link: '/en/architecture/overview' },
     { text: 'API', link: '/en/api/' },
     { text: 'Downloads', link: '/en/downloads/' },
@@ -130,6 +154,28 @@ const enThemeConfig: DefaultTheme.Config = {
           { text: 'Getting Started', link: '/en/guide/getting-started' },
           { text: 'Docs Workflow', link: '/en/guide/docs-workflow' },
         ],
+      },
+    ],
+    '/en/agent/': [
+      {
+        text: 'Agent',
+        items: [
+          { text: 'Overview', link: '/en/agent/' },
+          { text: 'Quick Start', link: '/en/agent/quick-start' },
+          { text: 'Workspace and Timeline', link: '/en/agent/workspace-timeline' },
+        ],
+      },
+      {
+        text: 'Creators',
+        items: [
+          { text: 'Agent Profiles', link: '/en/agent/profiles' },
+          { text: 'SKILLS', link: '/en/agent/skills' },
+          { text: 'Creator Adaptation Guide', link: '/en/agent/creator-guide' },
+        ],
+      },
+      {
+        text: 'Reference',
+        items: [{ text: 'Current Capabilities and Boundaries', link: '/en/agent/current-limits' }],
       },
     ],
     '/en/architecture/': [
