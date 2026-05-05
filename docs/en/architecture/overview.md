@@ -28,4 +28,5 @@ Use `presentation / application / domain / infrastructure` on the backend so sta
 
 - To understand how requests are taken over by the host, read [Frontend Integration](/en/architecture/frontend)
 - To understand how the Rust backend is organized, read [Backend Layers](/en/architecture/backend)
+- To understand how Agent runs through workspaces, tools, and timeline events, read [Agent System Architecture](/en/architecture/agent)
 - To understand the technology choices and boundaries, read [Tech Stack](/en/architecture/tech-stack)

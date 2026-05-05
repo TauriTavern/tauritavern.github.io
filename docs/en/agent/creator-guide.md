@@ -152,3 +152,7 @@ Before sharing Agent-adapted content, a small checklist helps:
 
 Creators do not need to use every Agent capability at once. A small profile with clear boundaries and reliable behavior is often better for users than a large profile that looks powerful but is hard to maintain.
 
+## Further Reading
+
+- If you mainly maintain PromptManager presets, read [Preset Author Guide](/en/agent/preset-authors).
+- If you want to start background Agent workflows from an extension, read [Extension Author Guide](/en/agent/extension-authors).

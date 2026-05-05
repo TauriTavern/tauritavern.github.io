@@ -15,6 +15,9 @@ API pages should answer these questions clearly:
 
 - `Layout API`: layout, panel, and host UI capabilities
 - `Extension API`: host-facing interfaces available to extensions
+- `Agent API`: starting Agent runs, subscribing to events, reading workspace files, and managing Agent Profiles
+- `Agent Tool Reference`: current built-in tool inputs, outputs, and limits
+- `Skill API`: importing, installing, reading, exporting, and deleting local Agent Skills
 - Future additions can include `Chat API`, `System API`, and `Storage API`
 
 ## Convention

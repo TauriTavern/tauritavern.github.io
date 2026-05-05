@@ -15,6 +15,9 @@ API 文档的重点回答：
 
 - `Layout API`：布局、面板、宿主界面能力
 - `Extension API`：扩展在 TauriTavern 环境中的宿主接口
+- `Agent API`：启动 Agent run、订阅事件、读取工作区、管理 Agent Profile
+- `Agent 工具参考`：当前内建工具的输入输出与限制
+- `Skill API`：管理本地 Agent Skill 的导入、安装、读取、导出和删除
 - 后续可继续补 `Chat API`、`System API`、`Storage API`
 
 ## 约定

@@ -66,7 +66,9 @@ If you create presets, character cards, or play styles:
 
 1. Start with [Agent Profiles](/en/agent/profiles).
 2. Then read [SKILLS](/en/agent/skills).
-3. Finish with [Creator Adaptation Guide](/en/agent/creator-guide) to package instructions, material, and limits in a stable way.
+3. Read [Creator Adaptation Guide](/en/agent/creator-guide) to package instructions, material, and limits in a stable way.
+4. If you mainly maintain presets, continue with [Preset Author Guide](/en/agent/preset-authors).
+5. If you maintain extensions or automation panels, continue with [Extension Author Guide](/en/agent/extension-authors).
 
 ## Relationship to the Rest of the Docs
 
@@ -74,3 +76,9 @@ The Agent section is written for users and creators. It focuses on how to use Ag
 
 If you need host-facing interfaces or ABI details, see the [API documentation](/en/api/). If you want to understand the larger engineering structure of TauriTavern, start with [Architecture Overview](/en/architecture/overview).
 
+For more detailed Agent references, you can also read:
+
+- [Agent System Architecture](/en/architecture/agent): workspaces, timeline, tool loop, and commit boundaries.
+- [Agent API](/en/api/agent): startup, subscription, cancellation, workspace reads, and Profile management.
+- [Agent Tool Reference](/en/api/agent-tools): current built-in tool inputs and outputs.
+- [Skill API](/en/api/skill): importing, installing, reading, exporting, and deleting SKILLS.
