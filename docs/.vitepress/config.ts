@@ -50,6 +50,7 @@ const zhThemeConfig: DefaultTheme.Config = {
           { text: '创作者适配指南', link: '/agent/creator-guide' },
           { text: '预设作者指南', link: '/agent/preset-authors' },
           { text: '扩展作者指南', link: '/agent/extension-authors' },
+          { text: '主题美化作者指南', link: '/agent/theme-authors' },
         ],
       },
       {
@@ -179,6 +180,7 @@ const enThemeConfig: DefaultTheme.Config = {
           { text: 'Creator Adaptation Guide', link: '/en/agent/creator-guide' },
           { text: 'Preset Author Guide', link: '/en/agent/preset-authors' },
           { text: 'Extension Author Guide', link: '/en/agent/extension-authors' },
+          { text: 'Theme Styling Author Guide', link: '/en/agent/theme-authors' },
         ],
       },
       {

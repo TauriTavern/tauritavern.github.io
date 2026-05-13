@@ -69,6 +69,7 @@ Agent 模式适合这些情况：
 3. 然后读 [创作者适配指南](/agent/creator-guide)，把说明、素材和限制整理成稳定的分发方式。
 4. 如果你主要维护预设，继续读 [预设作者指南](/agent/preset-authors)。
 5. 如果你维护扩展或自动化面板，继续读 [扩展作者指南](/agent/extension-authors)。
+6. 如果你制作主题或 CSS 美化，继续读 [主题美化作者指南](/agent/theme-authors)。
 
 ## 和现有文档的关系
 

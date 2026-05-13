@@ -69,6 +69,7 @@ If you create presets, character cards, or play styles:
 3. Read [Creator Adaptation Guide](/en/agent/creator-guide) to package instructions, material, and limits in a stable way.
 4. If you mainly maintain presets, continue with [Preset Author Guide](/en/agent/preset-authors).
 5. If you maintain extensions or automation panels, continue with [Extension Author Guide](/en/agent/extension-authors).
+6. If you make themes or custom CSS, continue with [Theme Styling Author Guide](/en/agent/theme-authors).
 
 ## Relationship to the Rest of the Docs
 
