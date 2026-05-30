@@ -13,11 +13,22 @@ Agent Mode 是一个可以按需开启的生成模式。它不会在关闭时改
 - 在聊天输入栏附近，点击 Agent 按钮切换开启或关闭。
 - 在扩展设置中的 `Agent 系统` 区域，点击 `Agent 模式已开启` / `Agent 模式已关闭`。
 
-长按输入栏旁的 Agent 按钮，可以打开 Agent 系统面板。面板里可以管理配置档案和 SKILLS。
+长按输入栏旁的 Agent 按钮，可以打开 Agent 系统面板。面板里可以管理配置档案、SKILLS 和当前使用的 Agent。
 
 ::: tip
-如果你只是想体验 Agent，先使用内置的 `default-writer` 即可。它是通用写作者配置，适合最小可用阶段的普通创作与对话。
+如果你只是想体验 Agent，先使用内置的 `default-writer` 即可。它是通用写作者配置，适合普通创作与对话。后续需进一步的需求时，再复制它做自己的配置。
 :::
+
+## 选择当前 Agent
+
+Agent 系统面板里有一个 `Active Profile`。它决定下一次 Agent 运行实际使用哪份配置。
+
+需要注意两点：
+
+- 正在编辑的 Profile 不一定就是正在运行的 Profile。运行前请确认 `Active Profile` 选对了。
+- 只能直接运行的 Profile 才会出现在 `Active Profile` 列表中。只允许作为 SubAgent 的 Profile 不能被手动选为主 Agent。
+
+如果某个导入的 Profile 显示需要重新配置模型，先在 Profile 里[选择本机可用的模型连接](/agent/faq#agent-profile-model-from-api-connection)，再启动 Agent。
 
 ## 开启后会影响哪些操作
 
@@ -28,6 +39,7 @@ Agent Mode 开启后，当前这些生成会接入 Agent：
 | 普通发送 | 使用当前聊天上下文启动一次 Agent 运行 |
 | 重新生成 | 为当前回复启动新的 Agent 运行 |
 | 右划生成新候选 | 生成新的 swipe 候选时走 Agent |
+| `/trigger` | 在支持的单人聊天中触发一次普通 Agent 生成 |
 
 这些行为保持原有路径：
 
@@ -36,6 +48,8 @@ Agent Mode 开启后，当前这些生成会接入 Agent：
 | 切换已有 swipe 候选 | 不启动新的 Agent |
 | Agent Mode 关闭后的发送 | 走原有 SillyTavern 生成 |
 | 非 Agent 的扩展行为 | 不会因为 Agent 面板存在而自动改变 |
+
+当前 Agent Mode 主要面向单人聊天和 OpenAI/chat-completion 路径。群聊、非 chat-completion 路径或已有外部 tool turns 的生成，会明确失败或回到原有路径，而不是静默混用。
 
 ## 一次 Agent 运行会发生什么
 
@@ -48,9 +62,9 @@ TauriTavern 捕获本轮生成所需上下文
   ↓
 Agent 创建本次工作区
   ↓
-模型按配置档案看到可用工具、SKILLS 和工作区
+模型按配置档案看到可用工具、SKILLS、工作区和可调用的 SubAgent
   ↓
-Agent 可能搜索聊天、读取世界书、读取 SKILLS、写入草稿
+Agent 可能搜索聊天、读取世界书、读取 SKILLS、写入草稿，也可能把局部任务委派给 SubAgent
   ↓
 Agent 将输出文件提交为聊天消息
   ↓
@@ -72,6 +86,9 @@ Agent 运行时，输入栏附近会出现 Agent 时间线。它用于展示本�
 | 读取世界书 | Agent 查看本轮实际激活的世界书条目 |
 | 查看技能列表 | Agent 查看当前配置允许使用的 SKILLS |
 | 读取技能 | Agent 读取某个 Skill 的文件 |
+| 委派子任务 | Agent 启动一个 SubAgent 去处理局部任务 |
+| 等待子任务 | Agent 等待一个或多个 SubAgent 返回结果 |
+| 子任务返回 | SubAgent 返回摘要、发现或产物引用 |
 | 写入文件 | Agent 在工作区写入草稿、输出或笔记 |
 | 修改文件 | Agent 对已读文件做精确修改 |
 | 提交回复 | Agent 把输出文件提交到聊天 |
@@ -103,8 +120,8 @@ Agent 正在运行时，建议先等待当前运行完成。Agent 需要维护�
 可以从一个普通场景开始：
 
 1. 打开一个已有聊天。
-2. 确认当前使用的是 chat-completion 路径的模型连接。
-3. 开启 Agent Mode。
+2. 确认当前使用的是 chat-completion 路径的模型连接。若要让 Agent 使用独立模型，先参考[常见问题中的模型指定说明](/agent/faq#agent-profile-model-from-api-connection)。
+3. 开启 Agent Mode，并确认 `Active Profile` 是 `default-writer` 或其它可直接运行的配置。
 4. 发送一句普通消息。
 5. 展开 Agent 时间线，观察它是否搜索、读取、写入并提交。
 

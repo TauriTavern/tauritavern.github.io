@@ -43,6 +43,12 @@ const zhThemeConfig: DefaultTheme.Config = {
         ],
       },
       {
+        text: '多Agent协作',
+        items: [
+          { text: 'SubAgent', link: '/agent/subagents' },
+        ],
+      },
+      {
         text: '创作者',
         items: [
           { text: 'Agent 配置档案', link: '/agent/profiles' },
@@ -55,7 +61,10 @@ const zhThemeConfig: DefaultTheme.Config = {
       },
       {
         text: '参考',
-        items: [{ text: '当前能力与边界', link: '/agent/current-limits' }],
+        items: [
+          { text: '常见问题', link: '/agent/faq' },
+          { text: '当前能力与边界', link: '/agent/current-limits' },
+        ],
       },
     ],
     '/architecture/': [
@@ -275,7 +284,7 @@ export default defineConfig({
   lang: 'zh-CN',
   title: 'TauriTavern',
   description:
-    'TauriTavern 文档站：围绕 Tauri v2、Rust 后端与 SillyTavern 1.16.0 前端兼容的工程文档。',
+    'TauriTavern 文档站：围绕 Tauri v2、Rust 后端与 SillyTavern 1.18.0 前端兼容的工程文档。',
   lastUpdated: true,
   locales: {
     root: {
@@ -283,7 +292,7 @@ export default defineConfig({
       lang: 'zh-CN',
       title: 'TauriTavern',
       description:
-        'TauriTavern 文档站：围绕 Tauri v2、Rust 后端与 SillyTavern 1.16.0 前端兼容的工程文档。',
+        'TauriTavern 文档站：围绕 Tauri v2、Rust 后端与 SillyTavern 1.18.0 前端兼容的工程文档。',
       head: [
         ['meta', { property: 'og:title', content: 'TauriTavern Docs' }],
         [
