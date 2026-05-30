@@ -182,6 +182,12 @@ const enThemeConfig: DefaultTheme.Config = {
         ],
       },
       {
+        text: 'Multi-Agent Collaboration',
+        items: [
+          { text: 'SubAgent', link: '/en/agent/subagents' },
+        ],
+      },
+      {
         text: 'Creators',
         items: [
           { text: 'Agent Profiles', link: '/en/agent/profiles' },
@@ -194,7 +200,10 @@ const enThemeConfig: DefaultTheme.Config = {
       },
       {
         text: 'Reference',
-        items: [{ text: 'Current Capabilities and Boundaries', link: '/en/agent/current-limits' }],
+        items: [
+          { text: 'FAQ', link: '/en/agent/faq' },
+          { text: 'Current Capabilities and Boundaries', link: '/en/agent/current-limits' },
+        ],
       },
     ],
     '/en/architecture/': [

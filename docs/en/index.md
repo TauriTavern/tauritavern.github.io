@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: TauriTavern Docs
-  text: Tauri v2 × Rust × SillyTavern 1.16.0
+  text: Tauri v2 × Rust × SillyTavern 1.18.0
   tagline: Documentation for TauriTavern architecture, APIs, workflows, and engineering constraints.
   image:
     src: /logo.png
@@ -28,11 +28,11 @@ features:
   - title: Rust Backend
     details: The backend is rebuilt with Clean Architecture layers, separating command boundaries, services, domain models, and infrastructure.
   - title: Upstream Compatibility
-    details: The frontend stays aligned with SillyTavern 1.16.0 and remains maintainable through modular injection, request interception, and a stable host ABI.
+    details: The frontend stays aligned with SillyTavern 1.18.0 and remains maintainable through modular injection, request interception, and a stable host ABI.
   - title: Agent Workflow
-    details: Alongside ordinary generation, Agent provides a constrained workspace flow where the model can consult, edit, commit, and leave its process visible in the timeline.
+    details: Alongside ordinary generation, Agent provides a constrained workspace flow where the model can consult, edit, delegate, commit, and leave its process visible in the timeline.
   - title: Docs First
     details: The site is structured around stable information architecture first, so content can be migrated in gradually without locking future writing into the scaffold.
 ---
 
-> This is a foundation prepared for long-term documentation work. The Agent section focuses first on usage, creator adaptation, and current boundaries.
+> The Agent section focuses first on usage, creator adaptation, and current boundaries.

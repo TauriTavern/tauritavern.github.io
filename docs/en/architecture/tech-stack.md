@@ -4,7 +4,7 @@
 
 - `Tauri v2`: cross-platform native application runtime
 - `Rust`: backend and native capability implementation
-- `SillyTavern 1.16.0`: frontend source and compatibility baseline
+- `SillyTavern 1.18.0`: frontend source and compatibility baseline
 
 ## Frontend
 

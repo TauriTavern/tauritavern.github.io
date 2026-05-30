@@ -1,37 +1,39 @@
 ---
-description: Understand the philosophy, use cases, and reading path for TauriTavern Agent.
+description: Understand the basic idea, use cases, and reading path for TauriTavern Agent.
 ---
 
 # Agent Overview
 
-The TauriTavern Agent system is a new creation path alongside the original SillyTavern generation flow.
+TauriTavern Agent is a creation path alongside the original SillyTavern generation flow.
 
-Traditional generation is closer to a single request: the frontend prepares context, the model returns a piece of text, and that text enters the chat. If the result does not feel right, the usual answer is to regenerate. Agent Mode changes this into something closer to a writing process: understand the context, consult the material that matters, revise the draft when needed, and then submit the finished result to the chat.
+Traditional generation is closer to one request: the frontend prepares context, the model returns text, and the text enters the chat. If the result does not fit, the usual answer is to regenerate. Agent Mode turns this into a more deliberate writing process: understand the context, consult the material that matters, revise drafts when needed, and submit the finished result to the chat.
 
-It is not meant to replace ordinary generation. Ordinary generation remains the right fit for light, quick, direct conversation. Agent Mode is better suited to work that benefits from multiple steps, reference material, and creator-defined constraints.
+It is not meant to replace ordinary generation. Ordinary generation is still best for light, fast, direct conversation. Agent Mode is better for work that needs several steps, reference material, or creator-defined constraints.
 
 ## A Simple Definition
 
 In TauriTavern, an Agent run can be understood like this:
 
-> The Agent reads, searches, writes, and edits files inside a constrained workspace, then submits the chosen output as a chat message when it is done.
+> Agent reads, searches, writes, and edits files inside a constrained workspace, then submits the selected output as a chat message when it is done.
 
-The important point is not merely that the model can call tools. TauriTavern gives the process a clear boundary:
+The point is not only that the model can call tools. TauriTavern gives this process clear boundaries:
 
 - Intermediate Agent work is written into a workspace, not directly into chat history.
-- Reads, searches, writes, edits, and commits are recorded in the run timeline.
-- Creators can use Agent Profiles to constrain visible content, available tools, SKILLS, and budgets.
-- When Agent Mode is off, the original SillyTavern generation path remains unchanged.
+- Reads, searches, writes, edits, delegations, and commits are recorded in the run timeline.
+- Creators can use Agent Profiles to limit visible content, available tools, SKILLS, models, and budgets.
+- Complex work can be split across callable SubAgents. They run focused background tasks and return results.
+- When Agent Mode is off, the original SillyTavern generation path is unchanged.
 
 ## When Agent Mode Helps
 
 Agent Mode is a good fit when:
 
-- You want the reply to look back through longer chat history before it is written.
-- You want the model to draft and revise before submitting the final response.
+- You want a reply to review longer chat history before it is written.
+- You want the model to draft or revise before submitting the final response.
 - A character card, preset, or play style needs stable status blocks, side scenes, summaries, or durable memory.
 - A creator wants to package tools, instructions, and material for a specific writing task.
-- You want to see what the model actually did, rather than only seeing the final text.
+- A task can be split into a few independent pieces, such as research, draft review, or style checking.
+- You want to see what the model did, not only the final text.
 
 Ordinary generation is still a good fit when:
 
@@ -42,16 +44,17 @@ Ordinary generation is still a good fit when:
 
 ## What Agent Mode Is Not
 
-To keep expectations clear, the current TauriTavern Agent also has firm boundaries:
+To keep expectations clear, the current TauriTavern Agent has firm boundaries:
 
 - It does not let the model operate directly on system files.
 - It does not execute scripts from presets, character cards, or SKILLS.
 - It does not disguise tool results as chat messages.
 - It is not a separate model caller that bypasses existing API settings, secrets, logs, or platform policy.
+- It is not an unlimited background queue for many Agents. Delegation is still limited by Profile settings and run budgets.
 - It is not a global behavior that must always be enabled.
 
 ::: tip Clear failure is intentional
-If an Agent Profile is incomplete, requests a hidden tool, or tries to access a path outside the workspace, TauriTavern will stop the run or return an explicit error. This avoids the quiet kind of failure where the system appears to work while actually taking a different path.
+If an Agent configuration is incomplete, asks for a hidden tool, or tries to access a path outside the workspace, TauriTavern will stop the run or return a readable error. This avoids a worse outcome: appearing to work while silently taking a different path.
 :::
 
 ## How to Read These Pages
@@ -60,16 +63,18 @@ If you only want to use Agent Mode:
 
 1. Start with [Quick Start](/en/agent/quick-start).
 2. Read [Workspace and Timeline](/en/agent/workspace-timeline) to understand the events shown during a run.
-3. Check [Current Capabilities and Boundaries](/en/agent/current-limits) when something is unclear.
+3. If you see child task or delegation events, read [SubAgent](/en/agent/subagents).
+4. Check [Current Capabilities and Boundaries](/en/agent/current-limits) when something is unclear.
 
 If you create presets, character cards, or play styles:
 
 1. Start with [Agent Profiles](/en/agent/profiles).
-2. Then read [SKILLS](/en/agent/skills).
-3. Read [Creator Adaptation Guide](/en/agent/creator-guide) to package instructions, material, and limits in a stable way.
-4. If you mainly maintain presets, continue with [Preset Author Guide](/en/agent/preset-authors).
-5. If you maintain extensions or automation panels, continue with [Extension Author Guide](/en/agent/extension-authors).
-6. If you make themes or custom CSS, continue with [Theme Styling Author Guide](/en/agent/theme-authors).
+2. If you want to split work into child tasks, read [SubAgent](/en/agent/subagents).
+3. Then read [SKILLS](/en/agent/skills).
+4. Read [Creator Adaptation Guide](/en/agent/creator-guide) to package instructions, material, and limits in a stable way.
+5. If you mainly maintain presets, continue with [Preset Author Guide](/en/agent/preset-authors).
+6. If you maintain extensions or automation panels, continue with [Extension Author Guide](/en/agent/extension-authors).
+7. If you make themes or custom CSS, continue with [Theme Styling Author Guide](/en/agent/theme-authors).
 
 ## Relationship to the Rest of the Docs
 
