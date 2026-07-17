@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" aria-hidden="true">
+  <defs>
+    <radialGradient id="honey-haze">
+      <stop offset="0" stop-color="#efc45f" stop-opacity=".24" />
+      <stop offset=".58" stop-color="#f3d99b" stop-opacity=".08" />
+      <stop offset="1" stop-color="#f6e9c9" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="teal-haze">
+      <stop offset="0" stop-color="#72aaa7" stop-opacity=".13" />
+      <stop offset="1" stop-color="#a8ceca" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="sun-line" x1="980" y1="90" x2="1440" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dba93c" stop-opacity=".18" />
+      <stop offset=".55" stop-color="#edc66d" stop-opacity=".42" />
+      <stop offset="1" stop-color="#f1d48e" stop-opacity=".18" />
+    </linearGradient>
+    <linearGradient id="quiet-line" x1="1040" y1="440" x2="1390" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5d9e9d" stop-opacity=".14" />
+      <stop offset="1" stop-color="#83bbb5" stop-opacity=".34" />
+    </linearGradient>
+    <linearGradient id="low-line" x1="0" y1="760" x2="1440" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e0b34d" stop-opacity=".28" />
+      <stop offset=".48" stop-color="#eacb7c" stop-opacity=".08" />
+      <stop offset="1" stop-color="#6fa8a5" stop-opacity=".18" />
+    </linearGradient>
+  </defs>
+
+  <circle cx="1240" cy="270" r="320" fill="url(#honey-haze)" />
+  <circle cx="40" cy="720" r="245" fill="url(#teal-haze)" />
+
+  <g fill="none" stroke-linecap="round">
+    <path d="M1052.3 112.5A245 245 0 0 1 1440.7 410.5" stroke="url(#sun-line)" stroke-width="1.4" />
+    <path d="M1413.2 443.2A245 245 0 0 1 1018 373.5" stroke="url(#sun-line)" stroke-width="1.15" />
+    <path d="M1078.7 194.8A178 178 0 0 1 1417.3 254.5" stroke="url(#quiet-line)" stroke-width="1.35" />
+    <path d="M1401.3 345.2A178 178 0 0 1 1085.8 359" stroke="url(#sun-line)" stroke-width="1" />
+
+    <path d="M-154.9 607.5A225 225 0 1 1 152.5 914.9" stroke="url(#sun-line)" stroke-width="1.35" />
+    <path d="M-114.1 648.2A170 170 0 1 1 84 884.2" stroke="url(#quiet-line)" stroke-width="1.15" />
+
+    <path d="M662.3 955A390 390 0 0 1 1337.7 955" stroke="url(#low-line)" stroke-width="1.2" />
+  </g>
+
+  <g fill="#e4b64e">
+    <circle cx="1054" cy="146" r="4" opacity=".28" />
+    <circle cx="1196" cy="82" r="3" opacity=".34" />
+    <circle cx="1378" cy="112" r="8" opacity=".2" />
+    <circle cx="1405" cy="328" r="13" opacity=".09" />
+    <circle cx="67" cy="592" r="7" opacity=".18" />
+    <circle cx="219" cy="742" r="4" opacity=".26" />
+  </g>
+  <g fill="#63a3a1">
+    <circle cx="1008" cy="350" r="6" opacity=".14" />
+    <circle cx="1307" cy="461" r="4" opacity=".22" />
+    <circle cx="147" cy="552" r="3" opacity=".3" />
+    <circle cx="111" cy="841" r="9" opacity=".1" />
+  </g>
+</svg>

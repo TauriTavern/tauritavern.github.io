@@ -13,8 +13,8 @@ hero:
       text: Start Reading
       link: /en/guide/introduction
     - theme: alt
-      text: API Integration
-      link: /en/api/
+      text: Download
+      link: /en/downloads/
     - theme: alt
       text: Agent
       link: /en/agent/
