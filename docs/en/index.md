@@ -20,7 +20,7 @@ hero:
       link: /en/agent/
     - theme: alt
       text: GitHub
-      link: https://github.com/TauriTavern/TauriTavern
+      link: https://github.com/Darkatse/TauriTavern
 
 features:
   - title: Native Runtime
