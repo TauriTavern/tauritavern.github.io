@@ -14,6 +14,7 @@ API pages should answer these questions clearly:
 ## Suggested organization
 
 - `Layout API`: layout, panel, and host UI capabilities
+- `ChatSurface API`: chat DOM projection and extension runtime lifecycles
 - `Extension API`: host-facing interfaces available to extensions
 - `Agent API`: starting Agent runs, subscribing to events, reading workspace files, and managing Agent Profiles
 - `Agent Tool Reference`: current built-in tool inputs, outputs, and limits

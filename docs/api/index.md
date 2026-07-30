@@ -14,6 +14,7 @@ API 文档的重点回答：
 ## 当前建议的组织方式
 
 - `Layout API`：布局、面板、宿主界面能力
+- `ChatSurface API`：聊天 DOM 投影与扩展 runtime 生命周期
 - `Extension API`：扩展在 TauriTavern 环境中的宿主接口
 - `Agent API`：启动 Agent run、订阅事件、读取工作区、管理 Agent Profile
 - `Agent 工具参考`：当前内建工具的输入输出与限制

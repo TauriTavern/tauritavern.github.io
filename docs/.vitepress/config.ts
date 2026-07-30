@@ -85,6 +85,7 @@ const zhThemeConfig: DefaultTheme.Config = {
         items: [
           { text: '总览', link: '/api/' },
           { text: 'Layout API', link: '/api/layout' },
+          { text: 'ChatSurface API', link: '/api/chat-surface' },
           { text: 'Extension API', link: '/api/extensions' },
           { text: 'Agent API', link: '/api/agent' },
           { text: 'Agent 工具参考', link: '/api/agent-tools' },
@@ -224,6 +225,7 @@ const enThemeConfig: DefaultTheme.Config = {
         items: [
           { text: 'Overview', link: '/en/api/' },
           { text: 'Layout API', link: '/en/api/layout' },
+          { text: 'ChatSurface API', link: '/en/api/chat-surface' },
           { text: 'Extension API', link: '/en/api/extensions' },
           { text: 'Agent API', link: '/en/api/agent' },
           { text: 'Agent Tool Reference', link: '/en/api/agent-tools' },
