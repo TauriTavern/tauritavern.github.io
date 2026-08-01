@@ -14,7 +14,3 @@ export async function loadPageMarkdownSource(relativePath: string): Promise<stri
 
   return (await loader()) as string
 }
-
-export function getPageMarkdownDownloadName(relativePath: string): string {
-  return relativePath.replaceAll('/', '--')
-}

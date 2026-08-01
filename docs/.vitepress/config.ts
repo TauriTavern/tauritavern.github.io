@@ -1,6 +1,14 @@
+import { fileURLToPath } from 'node:url'
+
 import { defineConfig, type DefaultTheme } from 'vitepress'
 
+import {
+  copyMarkdownSources,
+  serveMarkdownSourcesPlugin,
+} from './markdown/markdownPages'
 import { installPageMarkdownActions } from './markdown/pageMarkdownActions'
+
+const docsDir = fileURLToPath(new URL('..', import.meta.url))
 
 const sharedSocialLinks: DefaultTheme.Config['socialLinks'] = [
   { icon: 'github', link: 'https://github.com/Darkatse/TauriTavern' },
@@ -352,6 +360,12 @@ export default defineConfig({
     config(md) {
       installPageMarkdownActions(md)
     },
+  },
+  vite: {
+    plugins: [serveMarkdownSourcesPlugin(docsDir)],
+  },
+  async buildEnd(siteConfig) {
+    await copyMarkdownSources(docsDir, siteConfig.outDir)
   },
   themeConfig: {
     socialLinks: sharedSocialLinks,

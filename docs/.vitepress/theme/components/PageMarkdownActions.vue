@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useData } from 'vitepress'
+import { useData, withBase } from 'vitepress'
 
-import {
-  getPageMarkdownDownloadName,
-  loadPageMarkdownSource,
-} from '../markdownSource'
+import { loadPageMarkdownSource } from '../markdownSource'
 
 const { frontmatter, lang, page } = useData()
 
@@ -22,21 +19,22 @@ const messages = computed(() =>
     ? {
         copy: '复制 Markdown',
         actions: '更多 Markdown 操作',
-        download: '下载 Markdown',
+        view: '查看 Markdown',
       }
     : {
         copy: 'Copy Markdown',
         actions: 'More Markdown actions',
-        download: 'Download Markdown',
+        view: 'View as Markdown',
       },
 )
 
-async function getCurrentMarkdownSource(): Promise<string> {
-  return await loadPageMarkdownSource(page.value.relativePath)
-}
+const markdownPageUrl = computed(() =>
+  withBase(`/${page.value.relativePath}`),
+)
 
 async function copyMarkdown(): Promise<void> {
-  await navigator.clipboard.writeText(await getCurrentMarkdownSource())
+  const markdown = await loadPageMarkdownSource(page.value.relativePath)
+  await navigator.clipboard.writeText(markdown)
 }
 
 function toggleMenu(): void {
@@ -45,22 +43,6 @@ function toggleMenu(): void {
 
 function closeMenu(): void {
   isMenuOpen.value = false
-}
-
-async function downloadMarkdown(): Promise<void> {
-  const markdown = await getCurrentMarkdownSource()
-  const objectUrl = URL.createObjectURL(
-    new Blob([markdown], { type: 'text/markdown;charset=utf-8' }),
-  )
-  const link = document.createElement('a')
-
-  link.href = objectUrl
-  link.download = getPageMarkdownDownloadName(page.value.relativePath)
-  document.body.append(link)
-  link.click()
-  link.remove()
-  URL.revokeObjectURL(objectUrl)
-  closeMenu()
 }
 
 function handleDocumentPointerDown(event: PointerEvent): void {
@@ -138,14 +120,16 @@ onBeforeUnmount(() => {
       </button>
 
       <div v-if="isMenuOpen" class="tt-page-markdown-actions__dropdown" role="menu">
-        <button
+        <a
           class="tt-page-markdown-actions__menu-item"
-          type="button"
           role="menuitem"
-          @click="downloadMarkdown"
+          :href="markdownPageUrl"
+          target="_blank"
+          rel="noreferrer"
+          @click="closeMenu"
         >
-          {{ messages.download }}
-        </button>
+          {{ messages.view }}
+        </a>
       </div>
     </div>
   </div>
@@ -236,6 +220,7 @@ onBeforeUnmount(() => {
   color: var(--vp-c-text-1);
   font: inherit;
   cursor: pointer;
+  text-decoration: none;
   white-space: nowrap;
   transition:
     background-color 0.18s ease,
