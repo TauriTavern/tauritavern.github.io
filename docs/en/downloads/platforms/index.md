@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Other platforms
-description: Choose a platform, architecture, and installation format for the latest stable TauriTavern release.
+description: Choose a platform, architecture, and installation format for the latest stable or Canary TauriTavern release.
 sidebar: false
 aside: false
 editLink: false

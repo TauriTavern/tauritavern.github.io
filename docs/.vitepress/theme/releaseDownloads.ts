@@ -1,8 +1,17 @@
-const releaseApiUrl =
-  'https://api.github.com/repos/Darkatse/TauriTavern/releases/latest'
+export type ReleaseChannel = 'stable' | 'canary'
 
-export const releasePageUrl =
-  'https://github.com/Darkatse/TauriTavern/releases/latest'
+const releaseApiUrls: Record<ReleaseChannel, string> = {
+  stable: 'https://api.github.com/repos/Darkatse/TauriTavern/releases/latest',
+  canary:
+    'https://api.github.com/repos/Darkatse/TauriTavern/releases/tags/Canary',
+}
+
+export const releasePageUrls: Record<ReleaseChannel, string> = {
+  stable: 'https://github.com/Darkatse/TauriTavern/releases/latest',
+  canary: 'https://github.com/Darkatse/TauriTavern/releases/tag/Canary',
+}
+
+export const releasePageUrl = releasePageUrls.stable
 
 export type PlatformId = 'windows' | 'macos' | 'linux' | 'android' | 'ios'
 
@@ -31,6 +40,7 @@ type GitHubReleaseAsset = {
 }
 
 type GitHubLatestReleaseResponse = {
+  name: string
   tag_name: string
   html_url: string
   published_at: string
@@ -74,6 +84,7 @@ export type ReleaseDownloadsSnapshot = {
   htmlUrl: string
   publishedAt: string
   tagName: string
+  title: string
   platforms: ReleaseDownloadPlatform[]
 }
 
@@ -101,7 +112,9 @@ const architectureOrder: ArchitectureId[] = [
   'unknown',
 ]
 
-let releaseDownloadsPromise: Promise<ReleaseDownloadsSnapshot> | undefined
+let releaseDownloadsPromises: Partial<
+  Record<ReleaseChannel, Promise<ReleaseDownloadsSnapshot>>
+> = {}
 
 function detectAssetArchitecture(assetName: string): ArchitectureId {
   if (/(arm64|aarch64|arm64-v8a)/i.test(assetName)) {
@@ -262,6 +275,7 @@ export function normalizeLatestRelease(
     htmlUrl: release.html_url,
     publishedAt: release.published_at,
     tagName: release.tag_name,
+    title: release.name,
     platforms: platformOrder
       .map((platformId) => {
         const options = platformOptions.get(platformId)
@@ -332,6 +346,10 @@ export function getRecommendedDownload(
   return platform.options[0]
 }
 
+export function getCanaryBuildDate(title: string): string {
+  return /(\d{4})\.(\d{2})\.(\d{2})/.exec(title)?.[0] ?? ''
+}
+
 export function verifyReleaseDownloadLogic(): void {
   const ipad = detectDevice({
     maxTouchPoints: 5,
@@ -353,30 +371,59 @@ export function verifyReleaseDownloadLogic(): void {
   if (macArm?.variantId !== 'apple-silicon' || debugBuild !== null) {
     throw new Error('Release asset classification self-check failed.')
   }
+
+  const canaryMac = classifyReleaseAsset(
+    'TauriTavern-20260731-canary-macos-arm64.dmg',
+  )
+  const canaryWindows = classifyReleaseAsset(
+    'TauriTavern-20260731-canary-windows-x64-setup.exe',
+  )
+  const canaryLinuxPortable = classifyReleaseAsset(
+    'TauriTavern-20260731-canary-linux-x64-portable',
+  )
+
+  if (
+    canaryMac?.variantId !== 'apple-silicon' ||
+    canaryWindows?.variantId !== 'installer' ||
+    canaryLinuxPortable?.variantId !== 'portable' ||
+    getCanaryBuildDate('Canary Release 2026.07.31') !== '2026.07.31'
+  ) {
+    throw new Error('Canary asset classification self-check failed.')
+  }
 }
 
-async function fetchLatestReleaseSnapshot(): Promise<ReleaseDownloadsSnapshot> {
-  const response = await fetch(releaseApiUrl)
+async function fetchReleaseSnapshot(
+  channel: ReleaseChannel,
+): Promise<ReleaseDownloadsSnapshot> {
+  const response = await fetch(releaseApiUrls[channel])
 
   if (!response.ok) {
     throw new Error(
-      `GitHub latest release request failed with ${response.status} ${response.statusText}`,
+      `GitHub ${channel} release request failed with ${response.status} ${response.statusText}`,
     )
   }
 
-  const latestRelease =
-    (await response.json()) as GitHubLatestReleaseResponse
+  const release = (await response.json()) as GitHubLatestReleaseResponse
 
-  return normalizeLatestRelease(latestRelease)
+  return normalizeLatestRelease(release)
+}
+
+export async function getReleaseDownloads(
+  channel: ReleaseChannel,
+): Promise<ReleaseDownloadsSnapshot> {
+  let promise = releaseDownloadsPromises[channel]
+
+  if (!promise) {
+    promise = fetchReleaseSnapshot(channel).catch((error) => {
+      delete releaseDownloadsPromises[channel]
+      throw error
+    })
+    releaseDownloadsPromises[channel] = promise
+  }
+
+  return await promise
 }
 
 export async function getLatestReleaseDownloads(): Promise<ReleaseDownloadsSnapshot> {
-  if (!releaseDownloadsPromise) {
-    releaseDownloadsPromise = fetchLatestReleaseSnapshot().catch((error) => {
-      releaseDownloadsPromise = undefined
-      throw error
-    })
-  }
-
-  return await releaseDownloadsPromise
+  return await getReleaseDownloads('stable')
 }

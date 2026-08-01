@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 其他平台版本
-description: 选择适合你的平台、架构与安装格式，下载最新稳定版 TauriTavern。
+description: 选择适合你的平台、架构与安装格式，下载最新稳定版或 Canary 测试版 TauriTavern。
 sidebar: false
 aside: false
 editLink: false

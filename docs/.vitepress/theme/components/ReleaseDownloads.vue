@@ -4,13 +4,15 @@ import { useData } from 'vitepress'
 
 import {
   detectDevice,
-  getLatestReleaseDownloads,
+  getCanaryBuildDate,
   getRecommendedDownload,
-  releasePageUrl,
+  getReleaseDownloads,
+  releasePageUrls,
   verifyReleaseDownloadLogic,
   type ArchitectureId,
   type DeviceProfile,
   type PlatformId,
+  type ReleaseChannel,
   type ReleaseDownloadsSnapshot,
   type VariantId,
 } from '../releaseDownloads'
@@ -33,6 +35,8 @@ const props = withDefaults(
   { mode: 'landing' },
 )
 const { lang } = useData()
+const channelStorageKey = 'tt-download-channel'
+const channel = ref<ReleaseChannel>('stable')
 const latestRelease = ref<ReleaseDownloadsSnapshot>()
 const device = ref<DeviceProfile>({ architectureId: 'unknown', platformId: null })
 const selectedPlatformId = ref<PlatformId>('windows')
@@ -75,6 +79,19 @@ const messages = computed(() =>
         allBuildsDescription: '选择你的平台和安装格式。',
         platformSelectorLabel: '选择下载平台',
         download: '下载',
+        switchPrefix: '切换到',
+        channelNames: {
+          stable: '稳定版',
+          canary: 'Canary',
+        } satisfies Record<ReleaseChannel, string>,
+        switchSuffix: {
+          stable: '',
+          canary: '版本',
+        } satisfies Record<ReleaseChannel, string>,
+        beta: '测试版',
+        canaryShort: '每日构建的测试版',
+        built: '构建于',
+        unstable: '可能不稳定',
         platformTitles: {
           windows: 'Windows',
           macos: 'macOS',
@@ -138,6 +155,19 @@ const messages = computed(() =>
         allBuildsDescription: 'Choose a platform and installation format.',
         platformSelectorLabel: 'Choose a download platform',
         download: 'Download',
+        switchPrefix: 'Switch to the ',
+        channelNames: {
+          stable: 'stable',
+          canary: 'Canary',
+        } satisfies Record<ReleaseChannel, string>,
+        switchSuffix: {
+          stable: ' version',
+          canary: ' version',
+        } satisfies Record<ReleaseChannel, string>,
+        beta: 'Beta',
+        canaryShort: 'Daily beta build',
+        built: 'Built',
+        unstable: 'may be unstable',
         platformTitles: {
           windows: 'Windows',
           macos: 'macOS',
@@ -227,6 +257,20 @@ const publishedAt = computed(() => {
   }).format(new Date(latestRelease.value.publishedAt))
 })
 
+const canaryBuildDate = computed(() => {
+  if (!latestRelease.value) {
+    return ''
+  }
+
+  return getCanaryBuildDate(latestRelease.value.title) || publishedAt.value
+})
+
+const currentReleasePageUrl = computed(() => releasePageUrls[channel.value])
+
+const switchTarget = computed<ReleaseChannel>(() =>
+  channel.value === 'canary' ? 'stable' : 'canary',
+)
+
 const detectedVariantLabel = computed(() => {
   if (recommendedDownload.value) {
     return messages.value.optionLabels[recommendedDownload.value.variantId]
@@ -287,8 +331,16 @@ async function loadRelease(): Promise<void> {
   isLoading.value = true
   hasError.value = false
 
+  const requestedChannel = channel.value
+
   try {
-    latestRelease.value = await getLatestReleaseDownloads()
+    const snapshot = await getReleaseDownloads(requestedChannel)
+
+    if (requestedChannel !== channel.value) {
+      return
+    }
+
+    latestRelease.value = snapshot
     const preferredPlatform = device.value.platformId
 
     if (
@@ -302,13 +354,43 @@ async function loadRelease(): Promise<void> {
       selectedPlatformId.value = latestRelease.value.platforms[0].platformId
     }
   } catch {
-    hasError.value = true
+    if (requestedChannel === channel.value) {
+      hasError.value = true
+    }
   } finally {
-    isLoading.value = false
+    if (requestedChannel === channel.value) {
+      isLoading.value = false
+    }
   }
 }
 
+function selectChannel(nextChannel: ReleaseChannel): void {
+  if (nextChannel === channel.value) {
+    return
+  }
+
+  channel.value = nextChannel
+
+  try {
+    localStorage.setItem(channelStorageKey, nextChannel)
+  } catch {
+    // Persistence is best-effort; the switch still works for this visit.
+  }
+
+  void loadRelease()
+}
+
 onMounted(async () => {
+  try {
+    const storedChannel = localStorage.getItem(channelStorageKey)
+
+    if (storedChannel === 'stable' || storedChannel === 'canary') {
+      channel.value = storedChannel
+    }
+  } catch {
+    // Ignore storage failures and fall back to the stable channel.
+  }
+
   device.value = await detectCurrentDevice()
   await loadRelease()
 })
@@ -344,7 +426,7 @@ onMounted(async () => {
                 <div v-else-if="hasError" class="tt-downloads__error">
                   <a
                     class="tt-downloads__primary"
-                    :href="releasePageUrl"
+                    :href="currentReleasePageUrl"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -378,7 +460,7 @@ onMounted(async () => {
                   :href="recommendedDownload.url"
                 >
                   <strong>{{ messages.downloadVersion(latestRelease?.tagName ?? '') }}</strong>
-                  <small>{{ messages.official }}</small>
+                  <small>{{ channel === 'canary' ? messages.canaryShort : messages.official }}</small>
                 </a>
 
                 <a
@@ -387,13 +469,35 @@ onMounted(async () => {
                   :href="catalogPath"
                 >
                   <strong>{{ messages.choosePlatform }}</strong>
-                  <small>{{ messages.official }}</small>
+                  <small>{{ channel === 'canary' ? messages.canaryShort : messages.official }}</small>
                 </a>
               </div>
 
+              <p class="tt-downloads__channel-switch">
+                <button
+                  type="button"
+                  class="tt-downloads__channel-toggle"
+                  @click="selectChannel(switchTarget)"
+                >
+                  {{ messages.switchPrefix }}<span>{{ messages.channelNames[switchTarget] }}</span>{{ messages.switchSuffix[switchTarget] }}
+                </button>
+              </p>
+
               <p v-if="latestRelease" class="tt-downloads__release-note">
-                <span>{{ messages.new }}</span>
-                {{ messages.released }} {{ publishedAt }}
+                <span
+                  :class="{
+                    'tt-downloads__badge--beta': channel === 'canary',
+                  }"
+                >
+                  {{ channel === 'canary' ? messages.beta : messages.new }}
+                </span>
+                <template v-if="channel === 'canary'">
+                  {{ messages.built }} {{ canaryBuildDate }} ·
+                  {{ messages.unstable }}
+                </template>
+                <template v-else>
+                  {{ messages.released }} {{ publishedAt }}
+                </template>
                 <a :href="latestRelease.htmlUrl" target="_blank" rel="noreferrer">
                   {{ messages.releaseNotes }}
                 </a>
@@ -448,12 +552,22 @@ onMounted(async () => {
         <div v-else-if="hasError" class="tt-downloads__catalog-status">
           <p>{{ messages.errorDetail }}</p>
           <button type="button" @click="loadRelease">{{ messages.retry }}</button>
-          <a :href="releasePageUrl" target="_blank" rel="noreferrer">
+          <a :href="currentReleasePageUrl" target="_blank" rel="noreferrer">
             GitHub Releases
           </a>
         </div>
 
         <template v-else-if="latestRelease">
+          <p class="tt-downloads__channel-switch">
+            <button
+              type="button"
+              class="tt-downloads__channel-toggle"
+              @click="selectChannel(switchTarget)"
+            >
+              {{ messages.switchPrefix }}<span>{{ messages.channelNames[switchTarget] }}</span>{{ messages.switchSuffix[switchTarget] }}
+            </button>
+          </p>
+
           <nav
             class="tt-downloads__platforms"
             role="group"
@@ -560,6 +674,7 @@ onMounted(async () => {
   --muted: #a3a3a3;
   --soft: #262626;
   --line: #333;
+  --vp-c-brand-1: #33b9cb;
   --pattern-opacity: 0.42;
   --pattern-filter: none;
   --ambient:
@@ -633,13 +748,47 @@ onMounted(async () => {
 }
 
 .tt-downloads__action {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  column-gap: 20px;
   margin-top: 32px;
+}
+
+.tt-downloads__channel-switch {
+  order: 2;
+  margin: 0;
+}
+
+.tt-downloads__catalog .tt-downloads__channel-switch {
+  margin-top: 24px;
+}
+
+.tt-downloads__channel-toggle {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 15px;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.tt-downloads__channel-toggle span {
+  color: var(--vp-c-brand-1, #16889b);
+  font-weight: 500;
 }
 
 .tt-downloads__action-main {
   display: flex;
   justify-content: flex-start;
-  width: var(--download-control-width);
+  flex: 0 0 auto;
+  order: 1;
+  width: auto;
+  min-width: var(--download-control-width);
 }
 
 .tt-downloads__action-main > * {
@@ -718,6 +867,8 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  flex-basis: 100%;
+  order: 3;
   gap: 8px;
   margin: 8px 0 0;
 }
@@ -730,6 +881,10 @@ onMounted(async () => {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.5;
+}
+
+.tt-downloads__release-note > span.tt-downloads__badge--beta {
+  background: #d97706;
 }
 
 .tt-downloads__release-note a,
@@ -1015,6 +1170,16 @@ onMounted(async () => {
 
   .tt-downloads__release-note {
     max-width: 340px;
+  }
+
+  .tt-downloads__action-main {
+    width: var(--download-control-width);
+  }
+
+  .tt-downloads__channel-switch {
+    flex-basis: 100%;
+    order: 4;
+    margin: 14px 0 0;
   }
 
   .tt-downloads__device {
