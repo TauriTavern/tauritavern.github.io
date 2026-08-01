@@ -63,6 +63,7 @@ const messages = computed(() =>
         retry: '重新读取',
         testFlightPolicy: '可用性受 Apple TestFlight 政策限制。',
         publicBeta: '公开测试',
+        canaryBeta: 'Canary 测试',
         joinTestFlight: '加入测试',
         downloadVersion: (version: string) => '下载 ' + version,
         official: '正式版，适合大部分人使用',
@@ -139,6 +140,7 @@ const messages = computed(() =>
         retry: 'Try again',
         testFlightPolicy: 'Availability is subject to Apple TestFlight policies.',
         publicBeta: 'Public beta',
+        canaryBeta: 'Canary beta',
         joinTestFlight: 'Join beta',
         downloadVersion: (version: string) => 'Download ' + version,
         official: 'Stable release',
@@ -266,6 +268,12 @@ const canaryBuildDate = computed(() => {
 })
 
 const currentReleasePageUrl = computed(() => releasePageUrls[channel.value])
+
+const testFlightUrl = computed(() =>
+  channel.value === 'canary'
+    ? 'https://testflight.apple.com/join/hT19wwDB'
+    : 'https://testflight.apple.com/join/gpqAdeTm',
+)
 
 const switchTarget = computed<ReleaseChannel>(() =>
   channel.value === 'canary' ? 'stable' : 'canary',
@@ -598,9 +606,9 @@ onMounted(async () => {
                     {{ messages.testFlightPolicy }}
                   </span>
                 </div>
-                <small>{{ messages.publicBeta }}</small>
+                <small>{{ channel === 'canary' ? messages.canaryBeta : messages.publicBeta }}</small>
                 <a
-                  href="https://testflight.apple.com/join/gpqAdeTm"
+                  :href="testFlightUrl"
                   target="_blank"
                   rel="noreferrer"
                 >
