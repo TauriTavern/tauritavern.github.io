@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
 
 import {
@@ -7,10 +7,12 @@ import {
   getCanaryBuildDate,
   getRecommendedDownload,
   getReleaseDownloads,
+  isGuidedPlatform,
   releasePageUrls,
   verifyReleaseDownloadLogic,
   type ArchitectureId,
   type DeviceProfile,
+  type GuidedPlatformId,
   type PlatformId,
   type ReleaseChannel,
   type ReleaseDownloadsSnapshot,
@@ -40,6 +42,7 @@ const channel = ref<ReleaseChannel>('stable')
 const latestRelease = ref<ReleaseDownloadsSnapshot>()
 const device = ref<DeviceProfile>({ architectureId: 'unknown', platformId: null })
 const selectedPlatformId = ref<PlatformId>('windows')
+const platformNav = ref<HTMLElement>()
 const isLoading = ref(true)
 const hasError = ref(false)
 const currentYear = new Date().getFullYear()
@@ -65,6 +68,9 @@ const messages = computed(() =>
         publicBeta: '公开测试',
         canaryBeta: 'Canary 测试',
         joinTestFlight: '加入测试',
+        autoInstallerNote: '小白调试助手，在电脑或安卓手机上签名并安装 HAP。',
+        thirdPartyTool: '第三方工具',
+        openAutoInstaller: '打开',
         downloadVersion: (version: string) => '下载 ' + version,
         official: '正式版，适合大部分人使用',
         released: '最新正式版发布于',
@@ -99,6 +105,7 @@ const messages = computed(() =>
           linux: 'Linux',
           android: 'Android',
           ios: 'iOS',
+          harmonyos: '鸿蒙',
         } satisfies Record<PlatformId, string>,
         platformDescriptions: {
           windows: '安装版适合大多数用户；便携版无需安装。',
@@ -106,6 +113,7 @@ const messages = computed(() =>
           linux: 'AppImage 可直接运行，也可选择 DEB 或 RPM。',
           android: '近年的手机和平板通常使用 ARM64。',
           ios: '可通过 TestFlight 安装，或下载 IPA 自行签名与侧载。',
+          harmonyos: 'Beta：HAP 需要用自己的证书签名后安装，目前只在模拟器上测试过。',
         } satisfies Record<PlatformId, string>,
         optionLabels: {
           installer: '安装版',
@@ -122,6 +130,7 @@ const messages = computed(() =>
           x64: 'x86_64',
           x86: 'x86',
           ipa: 'IPA',
+          hap: 'HAP',
         } satisfies Record<VariantId, string>,
         architectureLabels: {
           arm64: 'ARM64',
@@ -142,6 +151,9 @@ const messages = computed(() =>
         publicBeta: 'Public beta',
         canaryBeta: 'Canary beta',
         joinTestFlight: 'Join beta',
+        autoInstallerNote: 'Signs and installs the HAP from a computer or an Android phone.',
+        thirdPartyTool: 'Third-party tool',
+        openAutoInstaller: 'Open',
         downloadVersion: (version: string) => 'Download ' + version,
         official: 'Stable release',
         released: 'Latest stable release published',
@@ -176,6 +188,7 @@ const messages = computed(() =>
           linux: 'Linux',
           android: 'Android',
           ios: 'iOS',
+          harmonyos: 'HarmonyOS',
         } satisfies Record<PlatformId, string>,
         platformDescriptions: {
           windows: 'The installer is best for most people; portable needs no installation.',
@@ -183,6 +196,7 @@ const messages = computed(() =>
           linux: 'Run the AppImage directly, or choose DEB or RPM.',
           android: 'Most recent phones and tablets use ARM64.',
           ios: 'Install with TestFlight, or download the IPA for signing or sideloading.',
+          harmonyos: 'Beta: sign the HAP with your own certificate. Only tested on the emulator so far.',
         } satisfies Record<PlatformId, string>,
         optionLabels: {
           installer: 'Installer',
@@ -199,6 +213,7 @@ const messages = computed(() =>
           x64: 'x86_64',
           x86: 'x86',
           ipa: 'IPA',
+          hap: 'HAP',
         } satisfies Record<VariantId, string>,
         architectureLabels: {
           arm64: 'ARM64',
@@ -274,6 +289,33 @@ const testFlightUrl = computed(() =>
     ? 'https://testflight.apple.com/join/hT19wwDB'
     : 'https://testflight.apple.com/join/gpqAdeTm',
 )
+
+const installGuide = computed(() => {
+  const platformId = selectedPlatform.value?.platformId
+
+  if (!platformId || !isGuidedPlatform(platformId)) {
+    return undefined
+  }
+
+  const guides = {
+    ios: {
+      title: 'TestFlight',
+      note: messages.value.testFlightPolicy,
+      tag: channel.value === 'canary' ? messages.value.canaryBeta : messages.value.publicBeta,
+      href: testFlightUrl.value,
+      action: messages.value.joinTestFlight,
+    },
+    harmonyos: {
+      title: 'Auto-Installer',
+      note: messages.value.autoInstallerNote,
+      tag: messages.value.thirdPartyTool,
+      href: 'https://github.com/likuai2010/auto-installer',
+      action: messages.value.openAutoInstaller,
+    },
+  } satisfies Record<GuidedPlatformId, Record<'title' | 'note' | 'tag' | 'href' | 'action', string>>
+
+  return guides[platformId]
+})
 
 const switchTarget = computed<ReleaseChannel>(() =>
   channel.value === 'canary' ? 'stable' : 'canary',
@@ -370,6 +412,12 @@ async function loadRelease(): Promise<void> {
       isLoading.value = false
     }
   }
+
+  // On narrow screens the tab bar scrolls sideways and may hide the preselected tab.
+  await nextTick()
+  platformNav.value
+    ?.querySelector('[aria-pressed="true"]')
+    ?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
 }
 
 function selectChannel(nextChannel: ReleaseChannel): void {
@@ -577,6 +625,7 @@ onMounted(async () => {
           </p>
 
           <nav
+            ref="platformNav"
             class="tt-downloads__platforms"
             role="group"
             :aria-label="messages.platformSelectorLabel"
@@ -599,20 +648,20 @@ onMounted(async () => {
             </div>
 
             <ul>
-              <li v-if="selectedPlatform.platformId === 'ios'">
+              <li v-if="installGuide">
                 <div>
-                  <strong>TestFlight</strong>
+                  <strong>{{ installGuide.title }}</strong>
                   <span class="tt-downloads__build-note">
-                    {{ messages.testFlightPolicy }}
+                    {{ installGuide.note }}
                   </span>
                 </div>
-                <small>{{ channel === 'canary' ? messages.canaryBeta : messages.publicBeta }}</small>
+                <small>{{ installGuide.tag }}</small>
                 <a
-                  :href="testFlightUrl"
+                  :href="installGuide.href"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {{ messages.joinTestFlight }}
+                  {{ installGuide.action }}
                 </a>
               </li>
               <li v-for="option in selectedPlatform.options" :key="option.assetName">

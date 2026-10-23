@@ -13,7 +13,22 @@ export const releasePageUrls: Record<ReleaseChannel, string> = {
 
 export const releasePageUrl = releasePageUrls.stable
 
-export type PlatformId = 'windows' | 'macos' | 'linux' | 'android' | 'ios'
+export type PlatformId =
+  | 'windows'
+  | 'macos'
+  | 'linux'
+  | 'android'
+  | 'ios'
+  | 'harmonyos'
+
+/** Platforms installed through TestFlight or self-signing, so their files are never a one-click download. */
+export const guidedPlatformIds = ['ios', 'harmonyos'] as const satisfies readonly PlatformId[]
+
+export type GuidedPlatformId = (typeof guidedPlatformIds)[number]
+
+export function isGuidedPlatform(platformId: PlatformId): platformId is GuidedPlatformId {
+  return (guidedPlatformIds as readonly PlatformId[]).includes(platformId)
+}
 
 export type ArchitectureId = 'arm64' | 'armv7' | 'x64' | 'x86' | 'unknown'
 
@@ -32,6 +47,7 @@ export type VariantId =
   | 'x64'
   | 'x86'
   | 'ipa'
+  | 'hap'
 
 type GitHubReleaseAsset = {
   name: string
@@ -94,6 +110,7 @@ const platformOrder: PlatformId[] = [
   'linux',
   'android',
   'ios',
+  'harmonyos',
 ]
 
 const platformVariantOrder: Record<PlatformId, VariantId[]> = {
@@ -102,6 +119,7 @@ const platformVariantOrder: Record<PlatformId, VariantId[]> = {
   linux: ['appimage', 'deb', 'rpm', 'portable'],
   android: ['arm64', 'armv7', 'x64', 'x86'],
   ios: ['ipa'],
+  harmonyos: ['hap'],
 }
 
 const architectureOrder: ArchitectureId[] = [
@@ -203,6 +221,10 @@ export function classifyReleaseAsset(assetName: string): ClassifiedAsset | null 
     return { architectureId, platformId: 'ios', variantId: 'ipa' }
   }
 
+  if (/\.hap$/i.test(assetName)) {
+    return { architectureId, platformId: 'harmonyos', variantId: 'hap' }
+  }
+
   return null
 }
 
@@ -219,6 +241,12 @@ export function detectDevice(signals: DeviceSignals): DeviceProfile {
     (/mac/.test(platformSignals) && (signals.maxTouchPoints ?? 0) > 1)
   ) {
     platformId = 'ios'
+  } else if (
+    /openharmony/.test(platformSignals) ||
+    // HarmonyOS 2–4 run Android apps and say so in the user agent.
+    (/harmonyos/.test(platformSignals) && !/android/.test(platformSignals))
+  ) {
+    platformId = 'harmonyos'
   } else if (/android/.test(platformSignals)) {
     platformId = 'android'
   } else if (/windows|win32|win64/.test(platformSignals)) {
@@ -309,7 +337,7 @@ export function getRecommendedDownload(
   release: ReleaseDownloadsSnapshot,
   device: DeviceProfile,
 ): ReleaseDownloadOption | undefined {
-  if (!device.platformId) {
+  if (!device.platformId || isGuidedPlatform(device.platformId)) {
     return undefined
   }
 
@@ -360,15 +388,33 @@ export function verifyReleaseDownloadLogic(): void {
     platform: 'Linux armv8l',
     userAgent: 'Mozilla/5.0 (Linux; Android 15)',
   })
+  const harmonyNext = detectDevice({
+    platform: 'Linux aarch64',
+    userAgent: 'Mozilla/5.0 (Phone; OpenHarmony 5.0) AppleWebKit/537.36 ArkWeb/4.1.6.1 Mobile',
+  })
+  const harmonyAndroid = detectDevice({
+    userAgent: 'Mozilla/5.0 (Linux; Android 12; HarmonyOS; NOH-AN00) Mobile',
+  })
 
-  if (ipad.platformId !== 'ios' || android.platformId !== 'android') {
+  if (
+    ipad.platformId !== 'ios' ||
+    android.platformId !== 'android' ||
+    harmonyNext.platformId !== 'harmonyos' ||
+    harmonyAndroid.platformId !== 'android'
+  ) {
     throw new Error('Release download platform detection self-check failed.')
   }
 
   const macArm = classifyReleaseAsset('TauriTavern_2.1.1_aarch64.dmg')
   const debugBuild = classifyReleaseAsset('TauriTavern_2.1.1_aarch64-DEBUG.dmg')
+  const hap = classifyReleaseAsset('TauriTavern-2.4.0-ohos-arm64-v8a.hap')
 
-  if (macArm?.variantId !== 'apple-silicon' || debugBuild !== null) {
+  if (
+    macArm?.variantId !== 'apple-silicon' ||
+    debugBuild !== null ||
+    hap?.platformId !== 'harmonyos' ||
+    hap.architectureId !== 'arm64'
+  ) {
     throw new Error('Release asset classification self-check failed.')
   }
 
